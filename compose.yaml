@@ -1,0 +1,47 @@
+services:
+  caddy:
+    cap_add:
+      - NET_ADMIN
+    depends_on:
+      - xray
+    env_file: .env
+    image: caddy:2.11-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    restart: unless-stopped
+    volumes:
+      - ./caddy:/etc/caddy
+      - caddy_config:/config
+      - caddy_data:/data
+      - static:/static
+  stats:
+    build: ./stats
+    depends_on:
+      - xray
+    env_file: .env
+    restart: unless-stopped
+  ui:
+    build: ./ui
+    env_file: .env
+    restart: unless-stopped
+    volumes:
+      - ./xray/config.json:/usr/src/app/config.json
+      - db:/usr/src/app/db
+      - static:/static
+  xray:
+    depends_on:
+      ui:
+        condition: service_healthy
+    env_file: .env
+    image: ghcr.io/xtls/xray-core:26.3.27
+    restart: unless-stopped
+    volumes:
+      - ./xray/config.json:/usr/local/etc/xray/config.json
+
+volumes:
+  caddy_config:
+  caddy_data:
+  db:
+  static:

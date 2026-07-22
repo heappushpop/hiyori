@@ -1,0 +1,17 @@
+{
+	log {
+		format console
+		level ERROR
+	}
+}
+
+{$DOMAIN_NAME} {
+	handle_path /static/* {
+		root /static
+		file_server
+	}
+
+	reverse_proxy {$XRAY_VLESS_PATH}/* h2c://xray:{$XRAY_VLESS_PORT}
+	reverse_proxy {$XRAY_VMESS_PATH}/* h2c://xray:{$XRAY_VMESS_PORT}
+	reverse_proxy ui:{$UI_PORT}
+}

@@ -1,0 +1,88 @@
+{
+    "api": {
+        "services": [
+            "HandlerService",
+            "StatsService"
+        ],
+        "tag": "api"
+    },
+    "dns": {
+        "servers": [
+            "1.1.1.1",
+            "8.8.8.8"
+        ]
+    },
+    "inbounds": [
+        {
+            "listen": "0.0.0.0",
+            "port": "env:XRAY_VLESS_PORT",
+            "protocol": "vless",
+            "settings": {
+                "clients": [],
+                "decryption": "none"
+            },
+            "streamSettings": {
+                "network": "xhttp",
+                "xhttpSettings": {
+                    "path": "/vless"
+                }
+            },
+            "tag": "vless"
+        },
+        {
+            "listen": "0.0.0.0",
+            "port": "env:XRAY_VMESS_PORT",
+            "protocol": "vmess",
+            "settings": {
+                "clients": []
+            },
+            "streamSettings": {
+                "network": "xhttp",
+                "xhttpSettings": {
+                    "path": "/vmess"
+                }
+            },
+            "tag": "vmess"
+        },
+        {
+            "listen": "0.0.0.0",
+            "port": "env:XRAY_API_PORT",
+            "protocol": "tunnel",
+            "tag": "api"
+        }
+    ],
+    "log": {
+        "access": "none",
+        "loglevel": "error"
+    },
+    "outbounds": [
+        {
+            "protocol": "freedom",
+            "tag": "direct"
+        },
+        {
+            "protocol": "blackhole",
+            "tag": "block"
+        }
+    ],
+    "policy": {
+        "levels": {
+            "0": {
+                "statsUserDownlink": true,
+                "statsUserOnline": true,
+                "statsUserUplink": true
+            }
+        }
+    },
+    "routing": {
+        "rules": [
+            {
+                "inboundTag": [
+                    "api"
+                ],
+                "outboundTag": "api"
+            }
+        ]
+    },
+    "stats": {}
+}

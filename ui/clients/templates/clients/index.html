@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Clients{% endblock %}
+{% block js %}
+<script src="{% static 'clients/index.js' %}" type="module"></script>
+{% endblock %}
+{% block main %}
+<div class="mt-4 text-center">
+  <button
+    class="btn btn-outline-primary text-uppercase"
+    data-bs-target="#modal"
+    data-bs-toggle="modal"
+  >
+    Add
+  </button>
+</div>
+<div class="my-4 row">
+  <div class="col-10 offset-1">
+    <div class="d-flex flex-wrap gap-4 justify-content-center">
+      {% for client in clients %}
+      <a
+        class="align-items-center border d-flex flex-column gap-3 p-3 rounded text-decoration-none"
+        data-name="{{ client.name }}"
+        href="{% url 'clients:client' client.id %}"
+      >
+        <span class="text-body text-break">
+          {{ client.name|truncatechars:16 }}
+        </span>
+        <small class="text-secondary"
+          >{{ client.stats.downlink.total|filesizeformat }}</small
+        >
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<div class="modal" id="modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add a new client</h5>
+      </div>
+      <div class="modal-body">
+        <form
+          action="{% url 'clients:add' %}"
+          class="form-floating"
+          id="form"
+          method="post"
+        >
+          {% csrf_token %}
+          <input
+            class="form-control"
+            id="name"
+            name="name"
+            placeholder="Name"
+            required
+            type="text"
+          />
+          <label for="name">Name</label>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancel
+        </button>
+        <button class="btn btn-primary" form="form">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

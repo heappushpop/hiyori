@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Statistics{% endblock %}
+{% block main %}
+<div class="my-4 table-responsive">
+  <table class="table table-bordered">
+    <thead>
+      <tr class="align-middle text-center">
+        <th class="fw-normal" rowspan="2">Name</th>
+        <th class="fw-normal" colspan="2">Today</th>
+        <th class="fw-normal" colspan="2">This Month</th>
+        <th class="fw-normal" colspan="2">This Year</th>
+        <th class="fw-normal" colspan="2">Total</th>
+      </tr>
+      <tr class="align-middle text-center">
+        <th class="fw-normal">Up</th>
+        <th class="fw-normal">Down</th>
+        <th class="fw-normal">Up</th>
+        <th class="fw-normal">Down</th>
+        <th class="fw-normal">Up</th>
+        <th class="fw-normal">Down</th>
+        <th class="fw-normal">Up</th>
+        <th class="fw-normal">Down</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for client in clients %}
+      <tr class="text-center">
+        <td>
+          <a href="{% url 'clients:client' client.id %}">{{ client.name }}</a>
+        </td>
+        {% with stats=client.stats %}
+        <td>{{ stats.uplink.day|filesizeformat }}</td>
+        <td>{{ stats.downlink.day|filesizeformat }}</td>
+        <td>{{ stats.uplink.month|filesizeformat }}</td>
+        <td>{{ stats.downlink.month|filesizeformat }}</td>
+        <td>{{ stats.uplink.year|filesizeformat }}</td>
+        <td>{{ stats.downlink.year|filesizeformat }}</td>
+        <td>{{ stats.uplink.total|filesizeformat }}</td>
+        <td>{{ stats.downlink.total|filesizeformat }}</td>
+        {% endwith %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Home{% endblock %}
+{% block main %}
+<div
+  class="align-items-center d-flex flex-column gap-3 h-100 justify-content-center"
+>
+  <div class="fs-2 lh-1">{{ request.headers.x_forwarded_for }}</div>
+</div>
+{% endblock %}
