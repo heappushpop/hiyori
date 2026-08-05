@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Clients{% endblock %}
+{% block js %}
+    <script src="{% static 'clients/index.js' %}" type="module"></script>
+    <script src="{% static 'links.js' %}" type="module"></script>
+    <script src="{% static 'online.js' %}" type="module"></script>
+{% endblock %}
+{% block action %}
+    <button class="btn btn-outline-secondary mx-lg-3 my-3 my-lg-0 text-uppercase"
+            data-bs-target="#modal"
+            data-bs-toggle="modal">Add</button>
+{% endblock %}
+{% block main %}
+    <div class="g-4 py-4 row row-cols-1 row-cols-lg-3 row-cols-md-2">
+        {% for client in clients %}
+            <div class="col">
+                <a class="card text-decoration-none"
+                   href="{% url 'clients:client' client.id %}">
+                    <div class="align-items-center card-header d-flex gap-3 justify-content-between">
+                        <div class="w-50">{{ client.name|truncatechars:16 }}</div>
+                        <small class="d-none text-end text-uppercase w-50"
+                               data-name="{{ client.name }}">Online</small>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="align-items-center d-flex gap-3 justify-content-between list-group-item">
+                            <div class="w-50">Downloaded</div>
+                            <div class="text-end w-50">{{ client.stats.down.total|filesizeformat }}</div>
+                        </li>
+                        <li class="align-items-center d-flex gap-3 justify-content-between list-group-item">
+                            <div class="w-50">Uploaded</div>
+                            <div class="text-end w-50">{{ client.stats.up.total|filesizeformat }}</div>
+                        </li>
+                        <li class="align-items-center d-flex gap-3 justify-content-between list-group-item">
+                            <div class="w-50">Created At</div>
+                            <div class="text-end w-50">{{ client.created_at|date }}</div>
+                        </li>
+                    </ul>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="modal" id="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add a new client</h5>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'clients:add' %}"
+                          class="form-floating"
+                          id="form"
+                          method="post">
+                        {% csrf_token %}
+                        <input class="form-control"
+                               id="name"
+                               name="name"
+                               placeholder="Name"
+                               required
+                               type="text" />
+                        <label for="name">Name</label>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary" form="form">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
